@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" width="390" height="844" font-family="'Cormorant Garamond', 'EB Garamond', Georgia, serif">
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feColorMatrix values="0 0 0 0 0.45  0 0 0 0 0.35  0 0 0 0 0.2  0 0 0 0.06 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="60%" stop-color="#F4ECD8" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#E8DFC7" stop-opacity="0.55"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Parchment base -->
+  <rect width="390" height="844" fill="#F4ECD8"/>
+  <rect width="390" height="844" fill="#F4ECD8" filter="url(#grain)"/>
+  <rect width="390" height="844" fill="url(#vignette)"/>
+
+  <!-- Safe area top (47px) — status bar zone, shown faintly for reference -->
+  <rect x="0" y="0" width="390" height="47" fill="#1A1308" opacity="0.02"/>
+  <!-- Faux iOS status bar content (just the time) -->
+  <text x="30" y="30" font-size="15" font-weight="600" fill="#1A1308" font-family="'SF Pro', -apple-system, system-ui, sans-serif">9:41</text>
+  <!-- Faux signal/battery indicators -->
+  <g opacity="0.9" fill="#1A1308">
+    <rect x="328" y="22" width="4" height="11" rx="1"/>
+    <rect x="334" y="20" width="4" height="13" rx="1"/>
+    <rect x="340" y="18" width="4" height="15" rx="1"/>
+    <rect x="346" y="16" width="4" height="17" rx="1"/>
+    <rect x="356" y="20" width="22" height="11" rx="2" fill="none" stroke="#1A1308" stroke-width="1"/>
+    <rect x="358" y="22" width="16" height="7" rx="1"/>
+  </g>
+
+  <!-- Header band (56px tall, below safe area) -->
+  <g transform="translate(0, 47)">
+    <!-- Candle motif (left) -->
+    <g transform="translate(20, 24)">
+      <!-- Candle body -->
+      <rect x="2" y="6" width="6" height="14" fill="#C9A65B" opacity="0.85"/>
+      <!-- Flame -->
+      <ellipse cx="5" cy="4" rx="2" ry="3.5" fill="#C9A65B"/>
+      <ellipse cx="5" cy="3" rx="1" ry="2" fill="#F4ECD8" opacity="0.6"/>
+    </g>
+    <!-- Dossier link (right) -->
+    <text x="370" y="34" font-size="13" font-weight="600" letter-spacing="1.2" text-anchor="end" fill="#3A2E1F">DOSSIER</text>
+    <!-- Hairline rule beneath header -->
+    <line x1="20" y1="56" x2="370" y2="56" stroke="#8C6F2E" stroke-width="0.5" opacity="0.3"/>
+  </g>
+
+  <!-- Content area (starts y=103, ends y=434 when keyboard up) -->
+  <g transform="translate(0, 119)">
+    <!-- Puzzle prose -->
+    <text x="28" y="0" font-size="13" font-weight="600" letter-spacing="1.2" fill="#3A2E1F">TRIAL THE FIRST &#x2014; REASON</text>
+    <line x1="28" y1="10" x2="180" y2="10" stroke="#8C6F2E" stroke-width="0.5" opacity="0.3"/>
+
+    <!-- Puzzle text -->
+    <text x="28" y="44" font-size="19" font-weight="500" fill="#1A1308">Three jars sit before you.</text>
+    <text x="28" y="70" font-size="19" font-weight="500" fill="#1A1308">One holds apples. One holds</text>
+    <text x="28" y="96" font-size="19" font-weight="500" fill="#1A1308">oranges. The third holds both.</text>
+    <text x="28" y="122" font-size="19" font-weight="500" fill="#1A1308">Every label is wrong. You may</text>
+    <text x="28" y="148" font-size="19" font-weight="500" fill="#1A1308">draw a single fruit from one jar.</text>
+    <text x="28" y="174" font-size="19" font-style="italic" font-weight="500" fill="#1A1308">Which jar, and what does it</text>
+    <text x="28" y="200" font-size="19" font-style="italic" font-weight="500" fill="#1A1308">prove?</text>
+  </g>
+
+  <!-- Apprentice's previous attempt, faded -->
+  <g transform="translate(0, 350)">
+    <text x="28" y="0" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="15" fill="#7A6A52">&gt; draw from the &quot;both&quot; jar</text>
+  </g>
+
+  <!-- Wizard streaming response (mid-stream, cursor visible) -->
+  <g transform="translate(0, 388)">
+    <text x="28" y="0" font-size="19" font-weight="500" fill="#1A1308">Oh. You went straight for it. </text>
+    <text x="28" y="26" font-size="19" font-weight="500" fill="#1A1308">No theatrics, no five-minute</text>
+    <text x="28" y="52" font-size="19" font-weight="500" fill="#1A1308">soliloquy about labels. Tell me</text>
+    <text x="28" y="78" font-size="19" font-weight="500" fill="#1A1308">why, apprentice. I want</text>
+    <text x="28" y="104">
+      <tspan font-size="19" font-weight="500" fill="#1A1308">to hear it from you</tspan>
+    </text>
+    <!-- Cursor — candle-gold blinking bar at end of text -->
+    <rect x="195" y="88" width="2" height="22" fill="#C9A65B"/>
+  </g>
+
+  <!-- Hairline above input bar -->
+  <line x1="0" y1="500" x2="390" y2="500" stroke="#8C6F2E" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Input bar (pinned, sits at y=500, height 52px, but above keyboard) -->
+  <g transform="translate(0, 500)">
+    <rect x="0" y="0" width="390" height="52" fill="#F4ECD8"/>
+    <text x="16" y="32" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="15" fill="#7A6A52">&gt; <tspan fill="#1A1308">because the &quot;both&quot;</tspan></text>
+    <!-- Caret in input -->
+    <rect x="248" y="20" width="1.5" height="18" fill="#1A1308" opacity="0.6"/>
+  </g>
+
+  <!-- Faux keyboard (336px tall, fills bottom) — shown as a recessive gray block -->
+  <g transform="translate(0, 552)">
+    <rect x="0" y="0" width="390" height="292" fill="#C8C5BC" opacity="0.5"/>
+    <!-- Hint of key rows -->
+    <g fill="#1A1308" opacity="0.25">
+      <text x="195" y="42" text-anchor="middle" font-size="11" font-family="system-ui, sans-serif">(keyboard)</text>
+    </g>
+    <!-- Home indicator at very bottom -->
+    <rect x="125" y="282" width="140" height="5" rx="2.5" fill="#1A1308" opacity="0.5"/>
+  </g>
+
+  <!-- Annotation: viewport bounds for builder reference, drawn very faintly -->
+  <g opacity="0.0">
+    <rect x="0" y="0" width="390" height="844" fill="none" stroke="#000" stroke-width="0.5"/>
+  </g>
+</svg>
