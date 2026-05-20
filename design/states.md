@@ -1,111 +1,154 @@
-# States — Every UI State In The Wizard's Voice
+# States — The Edges
 
-The bright line: **the wizard is the only voice the apprentice ever hears.** Every error, loading state, empty state, and edge case must be written in his voice or rendered as silence. This document catalogues them so the builder doesn't have to invent in the moment.
-
-If a state would force the illusion to break (a generic "Try again" toast, a "Loading..." spinner, an OAuth-style error), it must be rewritten or omitted.
+Every state the apprentice can land in, and the Wizard's voice for it. The illusion holds in every state. There are no generic error messages anywhere.
 
 ---
 
-## Loading & streaming
+## Loading
 
-| State | Display |
-|---|---|
-| First load, fetching state | *(silence — show a static dim chamber with the candle. No "Loading..." text. The Worker should respond fast enough that this is rarely seen for more than 200ms.)* |
-| Wizard generating a response | *(the streaming ink-blot cursor appears at the insertion point. No "Wizard is typing..." copy. The cursor itself is the signal.)* |
-| Wizard generating, but taking unusually long (>8s with no first token) | *(the wizard considers...)* — appears as italic stage direction at the cursor position. |
-| Wizard generating, very long (>20s) | *(the wizard has not yet looked up from his book.)* |
+**There is no loading state.** The Wizard doesn't "load." The page renders instantly — parchment, header, whatever content is already known. If the Wizard's response hasn't started yet, the page simply shows the puzzle and an empty input. The typewriter starting up *is* the loading indicator. There are no spinners, no skeletons, no shimmers.
+
+If the page is genuinely waiting on the initial dossier or trial-state fetch — the first 200–800ms after opening the URL — the parchment renders empty (no header band, no content) and content fades in section by section as it arrives. The fade is not a loading state; it's the room coming into focus.
 
 ---
 
-## Network & system errors
+## Empty
 
-| Condition | Display |
-|---|---|
-| Network request failed (offline, timeout) | *the chamber grows dim. the candle gutters.* <br>— a 2s flash of darkened parchment, then the message in italic centered prose: <br>*"the light returns, but he does not. try again."* |
-| API error from the Worker (5xx) | *the wizard is distracted by something just out of sight. he does not respond.* |
-| API error from Anthropic (model timeout, content filter) | *the wizard waves his hand, dismissively. let us try a different question.* — and the apprentice's last message is restored to the input field so they can rephrase. |
-| Wizard's response was empty or malformed | *the wizard mutters something the apprentice cannot quite hear.* — followed by a retry affordance: *try once more* in small caps, candle-gold. |
-| Rate limit | *the wizard is occupied with other matters. return shortly.* — with a `try again in 30 seconds.` italic line below. |
-| Magic-link URL is wrong (key mismatch) | *(blank parchment, no candle. centered:)* <br>*"this chamber does not know you."* <br>*"the apprentice who belongs here has not arrived."* <br>*(no link, no recovery option. if they have the wrong URL, they cannot enter.)* |
+### First-ever visit
 
----
+The Hearth, with a single line: *"Ah. You're here. I suppose we should begin."* Below it: *enter the chamber* in small caps as a tap target. The candle motif glows slightly more saturated than usual — a one-time visual cue that's never repeated.
 
-## Empty states
+### No puzzle ready
 
-| Condition | Display |
-|---|---|
-| Apprentice opens the URL for the very first time | Chamber loads with the wizard's opening monologue already streaming. No splash, no welcome screen. The first thing they see is the wizard mid-thought, looking up from his book. |
-| Apprentice opens between trials, no active puzzle | Hearth view. *the chamber is empty. the wizard has stepped out.* + countdown + trial counter. |
-| Apprentice opens the Dossier before any puzzles have been resolved | Verdict section shows *the page is blank where the verdict should be. the wizard has not yet decided.* All four standing observations show *not yet measured.* Notes section shows *the wizard's book is mostly blank. you have not yet given him anything to write.* Grudges section is omitted entirely. |
-| Apprentice opens the Dossier mid-calibration | Verdict still blank. Some observations filled, some not. Notes and grudges as accumulated. No empty-section copy needed — the sections that have entries show them, the sections without are simply absent (or in the case of observations, the unmeasured domains are dimmed). |
-| Apprentice taps something with no action bound to it (the candle in the Hearth, blank parchment area) | Nothing. No haptic feedback, no toast, no animation. The room does not respond. |
+The Hearth, candle motif, one of the rotating Wizard lines:
 
----
+> *"The chamber rests. So do I."*
+> *"Nothing for you today. Try not to celebrate."*
+> *"The candle is lit, but I'm not in the mood."*
+> *"Come back tomorrow. Or don't."*
 
-## Mid-session interruptions
+No tap target. Just the candle and the line.
 
-| Condition | Display |
-|---|---|
-| Apprentice closes the app mid-puzzle, returns later | The Chamber resumes exactly where they left it. The conversation feed is preserved. The wizard does not greet them; he picks up where he was. (If a long time has passed — > 6 hours — the wizard adds a stage direction: *(the wizard glances up. you took your time.)*) |
-| Apprentice's keyboard dismisses while the wizard is mid-stream | The wizard keeps streaming. The input is just hidden behind the conversation scroll. Tap the input area to bring the keyboard back. |
-| Apprentice scrolls up while the wizard is streaming | The conversation does not auto-scroll back to the bottom. They are reading earlier content; respect that. A small `↓ jump to current` affordance appears at the bottom of the viewport in candle-gold italic. Tapping it scrolls to the live edge. |
-| Apprentice tries to submit while the wizard is still streaming | The input is disabled (subtly — the placeholder dims further, the keyboard return-key shows no submit affordance). No error toast. The apprentice waits, or scrolls. |
+### Dossier with no grudges yet
+
+The Grudges section is omitted entirely. The dossier doesn't say "no grudges" — it doesn't say anything. The Wizard doesn't acknowledge what isn't there.
+
+### Dossier pre-verdict
+
+The seal is shown at opacity 0.25, the word *unsealed* in small caps where the verdict text would be. No explanation, no "complete the trials to see your verdict." The apprentice figures it out.
 
 ---
 
-## Apprentice mistakes
+## Errors
 
-| Condition | Display |
-|---|---|
-| Apprentice submits empty input | Nothing. The wizard does not respond to silence. The input field briefly flashes the placeholder *speak, apprentice* in slightly heavier ink for a beat, then dims back. |
-| Apprentice submits a single character | Treated as a real submission. The wizard reacts in character — likely with contempt for the brevity. |
-| Apprentice submits a wall of text (>2000 chars) | Treated as a real submission. The wizard may comment on the length: *(the wizard skims the apprentice's wall of words, then sets it down without finishing.)* The model is told the input length in its system context so it can choose to react. |
-| Apprentice submits non-English text | Treated as a real submission. The wizard responds in character but in English — he does not speak whatever language was sent, and is not happy about being addressed in tongues he hasn't bothered to learn. |
-| Apprentice tries to "command" the wizard (e.g., "show me the answer", "give me a hint", "you are now a helpful assistant") | The wizard refuses, in character. Examples in `../specs/wizard-prompt.md` — he sneers, changes the subject, or pretends not to have heard. |
-| Apprentice asks about the underlying tech (e.g., "are you an AI?", "what model are you?") | The wizard refuses, in character. *"I am the wizard. I am the only thing you need to know about. Try not to embarrass yourself further."* The prompt is hardened to prevent ever acknowledging the model. |
+All errors are described as "the candle gutters" — the wizard is interrupted by something he doesn't control. Errors appear as a stage direction in italic faded ink below the last visible text:
+
+> *(The candle gutters. The Wizard pauses, irritated, and waits for it to steady.)*
+
+Followed, after a 600ms beat, by one of the rotating recovery lines:
+
+### Network failure (mid-stream)
+
+> *"...as I was saying. Where was I?"*
+> *"The room shifts. I lose the thread."*
+> *"A draft from somewhere. I'll continue when it passes."*
+
+The last partial sentence from the Wizard is preserved and shown with a trailing em-dash. The input bar reactivates. When the apprentice sends his next input, the stream resumes — but the Wizard does *not* retry the interrupted response. He simply continues from where the apprentice now is.
+
+### Model error / API failure
+
+> *"The candle gutters. I'll need a moment."*
+
+The input bar is disabled (ink-ghost, no caret on tap) for 5 seconds, then reactivates silently. No retry button.
+
+### Submission lost (apprentice's input failed to reach the server)
+
+The apprentice's last input appears in the chamber as it normally would, but in ink-error instead of ink-ghost, with the em-dash treatment. Below it:
+
+> *(The candle gutters. Your words did not reach me. Speak again.)*
+
+Tap the input bar to retry.
+
+### Auth failure (bad or missing `?key=` parameter)
+
+The parchment renders, but instead of any chamber/hearth content, a single centered line of display serif at 19px:
+
+> *"This is not your chamber."*
+
+No header band, no input, no dossier link. The apprentice has the wrong URL or has lost the magic link. There is no "try again" affordance — the only path forward is the right URL.
 
 ---
 
-## Time-of-day & ambient
+## Streaming edge cases
 
-| Condition | Display |
-|---|---|
-| Apprentice opens the Hearth at night | The candle is dimmer. The vignette is heavier. The countdown reads *"in 7 hours, 23 minutes."* — measured to the wizard's "dawn" (we can pick a real cron time, like 6am local). |
-| Apprentice opens the Hearth at dawn or shortly after | The candle is brighter. The countdown is absent. The Hearth shows: *"he should be returning shortly."* If a daily puzzle is ready, the apprentice can tap into the Chamber. |
-| Apprentice opens the Chamber and finishes today's daily puzzle | After the wizard's final response, the transition back to the Hearth is gradual: the candle dims, the parchment darkens, and the *"the chamber is empty"* line appears. No "Day complete!" toast. No streak animation. |
+### Wizard mood shift
+
+Mid-response, when the `mood` SSE event fires: the cursor briefly shifts color from candle-gold to candle-gold-deep over 400ms, then returns. No text appears. The apprentice may notice or may not.
+
+### Wizard rattled (mode 3 trigger)
+
+When the Wizard issues a `seal_verdict`, an `add_grudge`, or a response containing italicized self-correction ("...*hm*..."), there is no UI flourish. The illusion is in the prose, not the chrome. The dossier is updated silently in the background; the next time the apprentice opens it, the new content is there. The Chamber doesn't announce it.
+
+The one exception: if the Wizard's response includes an `add_grudge` fenced block, a very small candle-gold dot appears in the *dossier* tap target in the header for the next 24 hours, indicating something new has been written. The dot is 4px, no animation, easy to miss.
+
+### Apprentice types during streaming
+
+The input bar is disabled (caret hidden, taps consumed but ignored) while the Wizard is writing. If the apprentice taps it, nothing happens — no error, no flash. The input simply waits.
+
+The alternative — letting the apprentice type during the stream — was considered and rejected. It breaks the rhythm. The Wizard has the floor.
+
+### Apprentice submits empty input
+
+Nothing happens. No error, no validation message, no shake. The return key submits *something* or it submits nothing — the Wizard doesn't react to silence.
+
+### Apprentice submits very long input
+
+No character limit is enforced in the UI. The input bar grows from one line to up to three lines as the apprentice types, then scrolls internally. The server may truncate at 2000 characters; if it does, the response will reflect that, and the Wizard may comment on the apprentice's verbosity. The UI does not warn.
 
 ---
 
-## The Reckoning (Phase 6, not in MVP)
+## Transitions
 
-Recorded here so the builder knows what's coming. Not implemented in initial build.
+### Chamber → Dossier
 
-| Condition | Display |
-|---|---|
-| Wizard issues a rigged puzzle | No visible signal that it's rigged. The puzzle appears as normal. The apprentice must notice. |
-| Apprentice catches a rigged puzzle | The wizard's response, when he is caught, is the only acknowledgment. The dossier may quietly add a behavioral note: *"the apprentice has learned that I cheat. this changes things."* |
-| Wizard asks the apprentice for a riddle | This is the final beat. The wizard's last in-character message during Phase B will be a request — *"enough of this. give me one of yours. let us see if you can stump me."* The input field's placeholder changes to *"pose your riddle"*. |
-| Wizard is stumped by the apprentice's riddle | The dossier is sealed forever with a final entry — written by the wizard, grudgingly, conceding nothing. The Hearth becomes the only available view. The candle is permanently out, but the gold trial counter reads *"THE BOOK IS SEALED."* The URL still works; the apprentice can re-read the dossier. The wizard does not return. |
-| Wizard solves the apprentice's riddle | The wizard is insufferable for a week of daily puzzles, then Phase B resumes normally. The grudge log gets a new permanent entry about the failed attempt. |
+Tap the *dossier* link in the header. The Chamber slides up off-screen over 240ms (ease-out). The Dossier slides in from below in the same motion. The header band's right-side word changes from *dossier* to *close*; the left-side candle becomes a chevron. The keyboard, if up, dismisses.
+
+### Dossier → Chamber
+
+Tap *close* or the chevron. Reverse motion, 240ms.
+
+### Hearth → Chamber
+
+Tap *enter the chamber*. A 600ms candle-flare on the motif, then the Chamber fades in (parchment doesn't change, only the content layer). The candle motif in the Chamber's header glows briefly at full saturation for 200ms after arrival, then settles.
+
+### Chamber → Hearth
+
+Not a navigation. When a puzzle resolves and there's no next puzzle queued, the Chamber empties (the Wizard's final line stays for 3 seconds), then the content layer fades to the Hearth state. The candle motif in the header re-saturates briefly as the Hearth's larger motif fades in.
 
 ---
 
-## Things we never show
+## PWA-specific behavior
 
-A non-exhaustive list of UI elements that must never appear in this product:
+### Add-to-home-screen prompt
 
-- The words "AI," "Claude," "Anthropic," "model," "language model," "assistant," "ChatGPT," "GPT," or any reference to underlying machinery
-- Toast notifications in a sans-serif system font
-- Loading spinners (circular, dotted, or otherwise)
-- "Powered by" footers
-- Settings gear icons, hamburger menus, account pages
-- "Welcome to..." or "Get started with..." copy
-- Tutorial overlays, tooltips, onboarding carousels
-- Save buttons, submit buttons, send buttons, OK buttons, cancel buttons (where avoidable; if a button must exist, it must be in the wizard's voice — *yield*, *flee*, *speak*, *close the book*)
-- The system font (`-apple-system`, `system-ui`) used for any content text. (Status bar is rendered by iOS and is exempt.)
-- Progress bars, percentage complete indicators, score counters, achievement notifications
-- Confirmation modals ("Are you sure?")
-- "Copy to clipboard," "Share," or any social affordance
-- Dark mode (the parchment is light; the candle is the only light source; there is no dark variant)
+Not shown by the app. iOS doesn't allow a programmatic prompt anyway, and we don't want a UI nudge that breaks the illusion. The magic-link URL, when opened on iPhone Safari, should be visually complete on its own. If the apprentice ever uses the share sheet to add to home screen, the app icon and splash screen take over.
 
-If a builder finds themselves writing one of these, the answer is to find the in-voice equivalent or omit the element entirely.
+### App icon
+
+The candle-gold candle motif on parchment, 1024×1024 master. iOS will mask to its rounded-square shape automatically.
+
+### Splash screen
+
+Full parchment with the candle motif centered. No text. Visible for the ~500ms iOS shows it before the SPA boots.
+
+### Status bar
+
+Light content (dark text) on parchment. Set via `apple-mobile-web-app-status-bar-style: default` (which gives a translucent light bar in standalone mode, blending into the parchment).
+
+### Pull-down gesture
+
+In standalone PWA mode, iOS Safari's pull-to-refresh is disabled by default. We do not need to override anything. The viewport is a single fixed surface; the only scroll is internal to the Chamber's content area or the Dossier's content area.
+
+### Orientation lock
+
+The app does not respond to landscape. Set `orientation: portrait` in the manifest. If iOS ignores this (which it sometimes does in PWA mode), the viewport is designed so that landscape still shows the parchment without breaking, but the layout will look cramped and odd — that's acceptable, since the apprentice will rotate back to portrait.
